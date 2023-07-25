@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<br><br>
+<h1 class="text-center">Agregar Laboratorio</h1>
+<br><br>
+<div class="container w-50 shadow pb-4 pt-4">
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+        <div class="mb-3">
+            <label for="ciudad" class="form-label">Ciudad</label>
+            <input type="text" class="form-control" id="ciudad" name="ciudad" required>
+        </div>
+        <div class="mb-3">
+            <label for="pais" class="form-label">País</label>
+            <input type="text" class="form-control" id="pais" name="pais" required>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-info">Agregar Laboratorio</button>
+        </div>
+    </form>
+</div>
+<div style="margin-bottom: 250px;"></div>
+{% endblock content %}

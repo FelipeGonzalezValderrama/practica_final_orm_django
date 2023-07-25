@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="margin-bottom: 130px;"></div>
+
+<h1 class="text-center">Laboratorios Registrados</h1>
+<br>
+<div class="container">
+    <table class="table table-hover shadow mx-auto">
+        <!-- El uso de 'mx-auto' centrará horizontalmente la tabla -->
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Ciudad</th>
+                <th>País</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for laboratorio in laboratorios %}
+            <tr class="table-light">
+                <td>{{ laboratorio.nombre }}</td>
+                <td>{{ laboratorio.ciudad }}</td>
+                <td>{{ laboratorio.pais }}</td>
+                <td class="text-center">
+                    <a class="btn btn-info" href="{% url 'actualizar_laboratorio' laboratorio.id %}">Actualizar</a> |
+                    <!-- Asegúrate de agregar comillas alrededor del ID del laboratorio -->
+                    <a class="btn btn-warning" href="#" onclick="openConfirmModal('{{ laboratorio.id }}')">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal de confirmación de eliminación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" href="{% url 'lista_laboratorios'%}">
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar este laboratorio?
+            </div>
+            <div class="modal-footer">
+                <!-- Botón "Cancelar" con atributo data-dismiss para cerrar la ventana modal -->
+                <a class="btn btn-info" href="{% url 'lista_laboratorios'%}">Cancelar</a>
+
+                <!-- Enlace "Eliminar" actualizado con un ID -->
+                <a id="confirmBtn" class="btn btn-danger" href="#">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="margin-bottom: 250px;"></div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    function openConfirmModal(laboratorioId) {
+        // Obtener la URL para eliminar el laboratorio
+        var deleteUrl = "{% url 'eliminar_laboratorio' 0 %}".replace('0', laboratorioId);
+
+        // Establecer el enlace "Eliminar" del modal para que redireccione a la URL de eliminación
+        document.getElementById('confirmBtn').setAttribute('href', deleteUrl);
+
+        // Abrir el modal
+        $('#confirmModal').modal('show');
+    }
+</script>
+
+{% endblock scripts %}
