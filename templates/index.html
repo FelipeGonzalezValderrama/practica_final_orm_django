@@ -2,37 +2,17 @@
 {% load static %}
 
 {% block content %}
-<div style="margin-bottom: 100px;"></div>
-
-<h1 class="text-center"><strong>LABS | INDUSTRY</strong></h1>
-
-<br><br>
-
-<div class="d-flex justify-content-center container">
-    <a class="text-decoration-none" href="{% url 'lista_laboratorios'%}">
-    <div class="d-inline-flex mx-4" style="width: 25%;">
-        <div class="card border-success shadow">
-            <img class="card-img-top" src="{% static 'assets/img/lab1.jpg' %}" alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title text-dark">Selecciona Laboratorios Registrados</h5>
-                <a href="{% url 'lista_laboratorios'%}" class="btn btn-info">Labs Reg</a>
-            </div>
-        </div>
+<main id="hero">
+    <div class="promo">
+        <h1> <strong>LABS | INDUSTRY</strong>
+        </h1>
+        <P>Registra y Reviza Tus Laboratorios Aqui:</P>
+        <a class="btn btn-info rounded" href="{% url 'lista_laboratorios'%}"> <strong>Labs Registrados</strong></a>
+        <a class="btn btn-info rounded" href="{% url 'agregar_laboratorio'%}"><strong>Registra tus Labs</strong></a>
     </div>
-</a>
-<a class="text-decoration-none" href="{% url 'agregar_laboratorio' %}">
-    <div class="d-inline-flex mx-4" style="width: 25%;">
-        
-        <div class="card border-success shadow">
-            <img class="card-img-top" src="{% static 'assets/img/lab2add.jpg' %}" alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title text-dark">Agrega nuevos Laboratorios</h5>
-                <a href="{% url 'agregar_laboratorio' %}" class="btn btn-info">Add Labs</a>
-            </div>
-        </div>
-    </div>
-</a>
-</div>
-<div style="margin-bottom: 200px;"></div>
-
+    <video muted autoplay loop preload="auto" poster="{% static 'assets/img/poster.jpg' %}">
+        <source src="{% static 'assets/video/mixkit-chemical-being-diluted-in-a-chemistry-lab-47178-medium.mp4'%}" type="video/mp4">
+    </video>
+    <div class="capa"></div>
+</main>
 {% endblock content %}

@@ -1,0 +1,43 @@
+/* style.css */
+
+/* Estilo para el contenedor principal (hero) */
+#hero {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 100vh;
+    /* Ajustar la altura para ocupar toda la altura de la pantalla */
+}
+
+/* Estilo para el video de fondo */
+#hero video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ajustar el tamaño del video para cubrir el contenedor */
+    z-index: -1;
+    /* Colocar el video detrás del contenido */
+}
+
+/* Estilo para el div con clase "promo" */
+.promo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+}
+
+/* Estilo para los botones */
+.promo .btn {
+    margin: 15px;
+    /* Agregar espacio entre los botones */
+    padding: 12px 25px;
+    /* Ajustar el tamaño del padding para hacer los botones más grandes */
+    font-size: 15px;
+    /* Ajustar el tamaño del texto del botón */
+}

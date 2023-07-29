@@ -7,7 +7,14 @@
 <h1 class="text-center">Laboratorios Registrados</h1>
 <br>
 <div class="container">
-    <table class="table table-hover shadow mx-auto">
+    <!-- Search bar -->
+    <form class="d-flex mb-3" action="{% url 'lista_laboratorios'%}" method="GET">
+        <input class="form-control me-2" type="search" name="q" placeholder="Buscar por nombre, ciudad o país" aria-label="Search">
+        <button class="btn btn-outline-info" type="submit">Buscar</button>
+        <a class="btn btn-outline-danger ms-2" href="{% url 'lista_laboratorios'%}">Limpiar búsqueda</a>
+    </form>
+
+    <table class="table table-hover shadow-lg mx-auto">
         <!-- El uso de 'mx-auto' centrará horizontalmente la tabla -->
         <thead>
             <tr>
@@ -73,5 +80,4 @@
         $('#confirmModal').modal('show');
     }
 </script>
-
 {% endblock scripts %}
