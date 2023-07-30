@@ -1,4 +1,12 @@
-/* style.css */
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+    font-family: 'Roboto', sans-serif;
+    /* Puedes ajustar el peso de la fuente según tus necesidades */
+}
 
 /* Estilo para el contenedor principal (hero) */
 #hero {
