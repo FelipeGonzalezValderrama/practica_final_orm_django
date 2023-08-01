@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-import dj_database_url
+#import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'laboratorio',
-    'bootstrap5',
     
 ]
 
@@ -86,6 +85,8 @@ DATABASES = {
         'PORT': '',             # Deja en blanco para usar el puerto predeterminado (5432).
     }
 }
+
+#DATABASES["default"] = dj_database_url.parse("postgres://labs_render_user:sWidMBwJLV3blCI7n9hNQz6AzcH8Rhzh@dpg-cj2sfaunqql8v0ecbhf0-a.oregon-postgres.render.com/labs_render")
 
 
 # Password validation
