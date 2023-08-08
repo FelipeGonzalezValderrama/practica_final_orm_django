@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-#import dj_database_url
+import dj_database_url
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-e$xmhk4g!p$3j-(!955fzlhu7#_f36so2n5!)&_m%1in9kzc#5'
+SECRET_KEY = os.environ.get("SECRET_KEY", "2345234DFGF")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = []
-
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
 
@@ -38,12 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'laboratorio',
+    "corsheaders",
     
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -71,26 +76,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
+CORS_ALLOWED_ORIGINS = True
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_final_orm',
-        'USER': 'userdjango',
-        'PASSWORD': 'userdjango',
-        'HOST': 'localhost',    # Si PostgreSQL está en local, si no, cambia a la IP o dominio del servidor.
-        'PORT': '',             # Deja en blanco para usar el puerto predeterminado (5432).
-    }
+    'default': dj_database_url.config(
+        # Feel free to alter this value to suit your needs.
+        default='postgres://labs_render_user:sWidMBwJLV3blCI7n9hNQz6AzcH8Rhzh@dpg-cj2sfaunqql8v0ecbhf0-a.oregon-postgres.render.com/labs_render',
+        conn_max_age=600
+    )
 }
 
-#DATABASES["default"] = dj_database_url.parse("postgres://labs_render_user:sWidMBwJLV3blCI7n9hNQz6AzcH8Rhzh@dpg-cj2sfaunqql8v0ecbhf0-a.oregon-postgres.render.com/labs_render")
+DATABASES["default"] = dj_database_url.parse("postgres://labs_render_user:sWidMBwJLV3blCI7n9hNQz6AzcH8Rhzh@dpg-cj2sfaunqql8v0ecbhf0-a.oregon-postgres.render.com/labs_render")
 
 
 # Password validation
-# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
+#https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
