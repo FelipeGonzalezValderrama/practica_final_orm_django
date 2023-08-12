@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<br><br>
+<h1 class="text-center">Actualizar Producto</h1>
+<br><br>
+<div class="container w-50 shadow-lg pb-4 pt-4">
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ producto.nombre }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="laboratorio" class="form-label">Laboratorio</label>
+            <select class="form-select" id="laboratorio" name="laboratorio" required>
+                {% for laboratorio in laboratorios %}
+                    <option value="{{ laboratorio.id }}" {% if laboratorio.id == producto.laboratorio.id %}selected{% endif %}>
+                        {{ laboratorio.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="f_fabricacion" class="form-label">Fecha de fabricación</label>
+            <input type="date" class="form-control" id="f_fabricacion" name="f_fabricacion" value="{{ producto.f_fabricacion|date:'Y-m-d' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="p_costo" class="form-label">Precio costo</label>
+            <input type="text" class="form-control" id="p_costo" name="p_costo" value="{{ producto.p_costo }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="p_venta" class="form-label">Precio venta</label>
+            <input type="text" class="form-control" id="p_venta" name="p_venta" value="{{ producto.p_venta }}" required>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-info">Actualizar Producto</button>
+            <a class="btn btn-secondary" href="{% url 'lista_productos' %}">Cancelar</a>
+        </div>
+    </form>
+</div>
+<div style="margin-bottom: 250px;"></div>
+{% endblock content %}

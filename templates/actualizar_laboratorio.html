@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="margin-bottom: 100px;"></div>
+<h1 class="text-center">Actualizar Producto</h1>
+<br>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 shadow-lg p-4">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+                <a class="btn btn-secondary" href="{% url 'lista_productos'%}">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+<div style="margin-bottom: 200px;"></div>
+
+{% endblock content %}
+

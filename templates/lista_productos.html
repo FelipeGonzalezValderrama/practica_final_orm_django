@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="margin-bottom: 130px;"></div>
+
+<h1 class="text-center">Productos Registrados</h1>
+<br>
+<div class="container">
+    <!-- Search bar -->
+    <form class="d-flex mb-3" action="{% url 'lista_productos'%}" method="GET">
+        <input class="form-control me-2" type="search" name="q" placeholder="Buscar por Nombre, Laboratorio, fecha de fabricacion, ROI, precio de venta...." aria-label="Search">
+        <button class="btn btn-outline-info" type="submit">Buscar</button>
+        <a class="btn btn-outline-danger ms-2" href="{% url 'lista_productos'%}">Limpiar búsqueda</a>
+    </form>
+
+    <table class="table table-hover shadow-lg mx-auto">
+        <!-- El uso de 'mx-auto' centrará horizontalmente la tabla -->
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Laboratorio</th>
+                <th>fecha de fabricacion</th>
+                <th>precio costo ROI</th>
+                <th>precio de venta</th>
+                <th>ganancia</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr class="table-light">
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.laboratorio }}</td>
+                <td>{{ producto.f_fabricacion }}</td>
+                <td>{{ producto.p_costo }}</td>
+                <td>{{ producto.p_venta}}</td>
+                <td>
+                    {{ producto.diferencia|floatformat:2 }}
+                </td>
+                <td class="text-center">
+                    <a class="btn btn-info" href="{% url 'actualizar_producto' producto.id %}">Actualizar</a> |
+                    <a class="btn btn-warning" href="#" onclick="openConfirmModal('{{ producto.id }}')">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal de confirmación de eliminación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" href="{% url 'lista_productos'%}">
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar este producto?
+            </div>
+            <div class="modal-footer">
+                <!-- Botón "Cancelar" con atributo data-dismiss para cerrar la ventana modal -->
+                <a class="btn btn-info" href="{% url 'lista_productos'%}">Cancelar</a>
+
+                <!-- Enlace "Eliminar" actualizado con un ID -->
+                <a id="confirmBtn" class="btn btn-danger" href="#">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="margin-bottom: 250px;"></div>
+{% endblock content %}
+
+{% block scripts %}
+
+<script>
+    function openConfirmModal(productoId) {
+        // Obtener la URL para eliminar el producto
+        var deleteUrl = "{% url 'eliminar_producto' 0 %}".replace('0', productoId);
+
+        // Establecer el enlace "Eliminar" del modal para que redireccione a la URL de eliminación
+        document.getElementById('confirmBtn').setAttribute('href', deleteUrl);
+
+        // Abrir el modal
+        $('#confirmModal').modal('show');
+    }
+</script>
+{% endblock scripts %}
