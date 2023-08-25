@@ -7,9 +7,14 @@
         <h1 style="color: white;"> <strong>LABS | INDUSTRY</strong>
         </h1>
         <P>Registra y Reviza Tus Laboratorios Aqui:</P>
+        <a class="btn btn-info rounded" href="{% url 'agregar_producto'%}"><strong>Registra tus Productos</strong></a>
+        <a class="btn btn-info rounded" href="{% url 'lista_productos'%}"> <strong>Productos Registrados</strong></a>
+        <br>
         <a class="btn btn-info rounded" href="{% url 'lista_laboratorios'%}"> <strong>Labs Registrados</strong></a>
         <a class="btn btn-info rounded" href="{% url 'agregar_laboratorio'%}"><strong>Registra tus Labs</strong></a>
     </div>
+    
+    
     <video muted autoplay loop preload="auto" poster="{% static 'assets/img/poster.jpg' %}">
         <source src="{% static 'assets/video/mixkit-chemical-being-diluted-in-a-chemistry-lab-47178-medium.mp4'%}"
             type="video/mp4">

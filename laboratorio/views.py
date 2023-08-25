@@ -84,7 +84,6 @@ def lista_productos(request):
     }
     return render(request, "lista_productos.html", context)
 
-
 #eliminar producto view
 def eliminar_producto(producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
@@ -109,10 +108,7 @@ def agregar_producto(request):
     }
     return render(request, "agregar_producto.html", context)
 
-
 #actualizar Producto
-from datetime import datetime
-
 def actualizar_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
 

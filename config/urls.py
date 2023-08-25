@@ -29,8 +29,6 @@ urlpatterns = [
     path('agregar_producto/', agregar_producto, name='agregar_producto'),
     path('actualizar_producto/<int:producto_id>/', actualizar_producto, name='actualizar_producto'),
 
-
-
 ]
 
 

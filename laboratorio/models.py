@@ -16,7 +16,6 @@ class DirectorGeneral(models.Model):
     def __str__(self):
         return self.nombre
 
-
 class Producto(models.Model):
     nombre = models.CharField(max_length=100)
     laboratorio = models.ForeignKey(Laboratorio, on_delete=models.CASCADE)
