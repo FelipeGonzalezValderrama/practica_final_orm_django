@@ -3,12 +3,19 @@ from .models import Laboratorio, Producto
 from django.db.models import Q
 from .forms import LaboratorioForm, ProductoForm
 from datetime import datetime
+from django.contrib.auth.forms import AuthenticationForm
+from django.views import View
+from django.contrib import messages
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import RegistroUsuarioForm 
+
 
 #index
 def index(request):
     return render(request, "index.html")
 
-#lista los laboratorios
+#view lista laboratorios
 def lista_laboratorios(request):
     search_query = request.GET.get("q")
     if search_query:
@@ -67,7 +74,7 @@ def agregar_laboratorio(request):
     }
     return render(request, "agregar_laboratorio.html", context)
 
-#view producto y query
+#view lista producto y query
 def lista_productos(request):
     search_query = request.GET.get("q")
     if search_query:
@@ -170,3 +177,60 @@ def buscar_resultados(request):
 #no hay resultados para la busqueda
 def no_resultados(request):
     return render(request, "no_resultados.html")
+
+
+# Login
+class LoginView(View):
+    def get(self, request):
+        form = AuthenticationForm()
+        context = {"login_form": form}
+        return render(request, "login.html", context)
+
+    def post(self, request):
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password")
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.info(request, f"Iniciaste sesion como: {username}.")
+                return redirect("/")
+            else:
+                messages.error(request, "Invalido username o password.")
+        else:
+            messages.error(request, "Invalido username o password.")
+
+        context = {"login_form": form}
+        return render(request, "login.html", context)
+
+
+#Logout
+class LogoutView(LoginRequiredMixin, View):
+    login_url = '/login/'  # URL de inicio de sesión
+    redirect_field_name = 'next'  # Nombre del campo de redirección
+
+    def get(self, request):
+        logout(request)
+        messages.info(request, "Se ha cerrado la sesión satisfactoriamente.")
+        return redirect("/")
+    
+
+    #registro
+class RegistroView(View):
+    def get(self, request):
+        form = RegistroUsuarioForm()
+        context = {"register_form": form}
+        return render(request, "registro.html", context)
+
+    def post(self, request):
+        form = RegistroUsuarioForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Registro Exitoso.")
+            return redirect("/")
+        else:
+            messages.error(request, "Registro invalido. Algunos datos ingresados no son correctos")
+            context = {"register_form": form}
+            return render(request, "registro.html", context)

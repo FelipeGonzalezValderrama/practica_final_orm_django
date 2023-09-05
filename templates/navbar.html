@@ -24,15 +24,37 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'lista_productos'%}">Productos Registrados</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'registro'%}"><strong>Registrate</strong></a>
+                </li>
             </ul>
-            <form class="d-flex" method="get" action="{% url 'resultados_busqueda' %}">
+            
+            <!-- Formulario de búsqueda -->
+            <form class="d-flex me-3" method="get" action="{% url 'resultados_busqueda' %}">
                 <input class="form-control me-sm-2" type="search" placeholder="Search" name="q">
                 <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
             </form>
 
+            <!-- Auth Navbar -->
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/logout"><strong>Logout</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#"><strong>{{ user.username }}</strong></a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/login"><strong>Login</strong></a>
+                </li>
+                {% endif %}
+            </ul>
+            <!-- Fin Auth Navbar -->
         </div>
     </div>
 </nav>
+
 <!-- Landbot chatbot-->
 <script>
     window.addEventListener('mouseover', initLandbot, { once: true });
