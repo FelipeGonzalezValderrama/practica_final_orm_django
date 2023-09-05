@@ -34,17 +34,23 @@ def eliminar_laboratorio(laboratorio_id):
 #actualiza laboratorios
 def actualizar_laboratorio(request, laboratorio_id):
     laboratorio = get_object_or_404(Laboratorio, id=laboratorio_id)
+    
     if request.method == "POST":
-        laboratorio.nombre = request.POST["nombre"]
-        laboratorio.ciudad = request.POST["ciudad"]
-        laboratorio.pais = request.POST["pais"]
-        laboratorio.save()
-        return redirect("lista_laboratorios")
+        # Procesar el formulario si se envió una solicitud POST
+        form = LaboratorioForm(request.POST, instance=laboratorio)
+        if form.is_valid():
+            form.save()
+            return redirect("lista_laboratorios")
     else:
-        context = {
-            "laboratorio": laboratorio,
-        }
-        return render(request, "actualizar_laboratorio.html", context)
+        # Si es una solicitud GET, simplemente renderiza el formulario con los datos actuales del laboratorio
+        form = LaboratorioForm(instance=laboratorio)
+
+    context = {
+        "form": form,
+        "laboratorio": laboratorio,  # Pasa el objeto laboratorio al contexto
+    }
+    return render(request, "actualizar_laboratorio.html", context)
+
 
 #agregar laboratorios
 def agregar_laboratorio(request):
@@ -129,7 +135,38 @@ def actualizar_producto(request, producto_id):
         return render(request, "actualizar_producto.html", context)
 
 
+#buscador de search del navbar
+
+def buscar_resultados(request):
+    search_query = request.GET.get("q")
+    
+    # Verificar si la consulta coincide con laboratorio
+    laboratorios = Laboratorio.objects.filter(
+        Q(nombre__icontains=search_query)
+        | Q(ciudad__icontains=search_query)
+        | Q(pais__icontains=search_query)
+    )
+
+    # Verificar si la consulta coincide con  producto
+    productos = Producto.objects.filter(
+        Q(nombre__icontains=search_query)
+        | Q(f_fabricacion__icontains=search_query)
+        | Q(p_costo__icontains=search_query)
+        | Q(p_venta__icontains=search_query)
+    )
+
+    # Redirigir deacuerdo a el resultado de la búsqueda
+    if laboratorios.exists():
+        # Si hay coincidencias en laboratorios, redirige a la página de laboratorios
+        return redirect(f"/lista_laboratorios/?q={search_query}")
+    elif productos.exists():
+        # Si hay coincidencias en productos, redirige a la página de productos
+        return redirect(f"/lista_productos/?q={search_query}")
+    else:
+        # Si no se encontraron resultados, puedes mostrar un mensaje o redirigir a una página predeterminada
+        return render(request, "no_resultados.html")
 
 
-
-
+#no hay resultados para la busqueda
+def no_resultados(request):
+    return render(request, "no_resultados.html")

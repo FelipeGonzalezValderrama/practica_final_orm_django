@@ -2,22 +2,39 @@
 {% load static %}
 
 {% block content %}
-<div style="margin-bottom: 100px;"></div>
-<h1 class="text-center">Actualizar Producto</h1>
-<br>
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 shadow-lg p-4">
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Actualizar</button>
-                <a class="btn btn-secondary" href="{% url 'lista_productos'%}">Cancelar</a>
-            </form>
+<br><br>
+<h1 class="text-center">Actualizar Laboratorio</h1>
+<br><br>
+<div class="container w-50 shadow-lg pb-4 pt-4">
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre</label>
+            <br>
+            <div class="container-fluid">
+            {{ form.nombre }}
         </div>
-    </div>
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.ciudad.id_for_label }}" class="form-label">Ciudad</label>
+            <br>
+            <div class="container-fluid">
+            {{ form.ciudad }}
+        </div>
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.pais.id_for_label }}" class="form-label">País</label>
+            <br>
+            <div class="container-fluid">
+            {{ form.pais }}
+        </div>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Actualizar</button>
+            <a class="btn btn-secondary" href="{% url 'lista_laboratorios' %}">Cancelar</a>
+        </div>
+        
+    </form>
 </div>
-<div style="margin-bottom: 200px;"></div>
-
+<div style="margin-bottom: 250px;"></div>
 {% endblock content %}
-
