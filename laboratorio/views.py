@@ -81,7 +81,7 @@ def lista_productos(request):
     else:
         productos = Producto.objects.all()
 
-    # Calcular la diferencia para cada producto
+# Calcular la diferencia para cada producto
     for producto in productos:
         producto.diferencia =  producto.p_venta - producto.p_costo
 
