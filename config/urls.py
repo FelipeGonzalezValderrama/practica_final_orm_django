@@ -15,26 +15,37 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from laboratorio.views import index, lista_laboratorios, eliminar_laboratorio, actualizar_laboratorio, agregar_laboratorio, lista_productos, eliminar_producto,agregar_producto, actualizar_producto, no_resultados, buscar_resultados,LogoutView, LoginView, RegistroView
+from laboratorio.views import (
+    index,
+    ListaLaboratoriosView,
+    eliminar_laboratorio,
+    ActualizarLaboratorioView,
+    AgregarLaboratorioView,
+    ListaProductosView,
+    eliminar_producto,
+    AgregarProductoView,
+    ActualizarProductoView,
+    NoResultadosView,
+    BuscarResultadosView,
+    LogoutView,
+    LoginView,
+    RegistroView,
+)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', index, name='index'),
-    path('lista_laboratorios/', lista_laboratorios, name='lista_laboratorios'),
-    path('eliminar_laboratorio/<int:laboratorio_id>/', eliminar_laboratorio, name='eliminar_laboratorio'),
-    path('actualizar_laboratorio/<int:laboratorio_id>/', actualizar_laboratorio, name='actualizar_laboratorio'),
-    path('agregar_laboratorio/', agregar_laboratorio, name='agregar_laboratorio'),
-    path('lista_productos/', lista_productos, name='lista_productos'),
-    path('eliminar_producto/<int:producto_id>/', eliminar_producto, name='eliminar_producto'),
-    path('agregar_producto/', agregar_producto, name='agregar_producto'),
-    path('actualizar_producto/<int:producto_id>/', actualizar_producto, name='actualizar_producto'),
-    path('no_resultados/', no_resultados, name='no_resultados'),
-    path('resultados_busqueda/', buscar_resultados, name='resultados_busqueda'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('registro/', RegistroView.as_view(), name='registro'),
-
-
+    path("admin/", admin.site.urls),
+    path("", index, name="index"),
+    path("lista_laboratorios/", ListaLaboratoriosView.as_view(), name="lista_laboratorios"),
+    path("eliminar_laboratorio/<int:laboratorio_id>/",eliminar_laboratorio,name="eliminar_laboratorio",),
+    path("actualizar_laboratorio/<int:laboratorio_id>/",ActualizarLaboratorioView.as_view(),name="actualizar_laboratorio",),
+    path("agregar_laboratorio/", AgregarLaboratorioView.as_view(), name="agregar_laboratorio"),
+    path("lista_productos/", ListaProductosView.as_view(), name="lista_productos"),
+    path("eliminar_producto/<int:producto_id>/",eliminar_producto,name="eliminar_producto",),
+    path("agregar_producto/", AgregarProductoView.as_view(), name="agregar_producto"),
+    path("actualizar_producto/<int:producto_id>/",ActualizarProductoView.as_view(),name="actualizar_producto",),
+    path("no_resultados/", NoResultadosView.as_view(), name="no_resultados"),
+    path("resultados_busqueda/", BuscarResultadosView.as_view(), name="resultados_busqueda"),
+    path("login/", LoginView.as_view(), name="login"),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path("registro/", RegistroView.as_view(), name="registro"),
 ]
-
-

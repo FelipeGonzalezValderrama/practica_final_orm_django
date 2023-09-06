@@ -15,22 +15,31 @@ from .forms import RegistroUsuarioForm
 def index(request):
     return render(request, "index.html")
 
-#view lista laboratorios
-def lista_laboratorios(request):
-    search_query = request.GET.get("q")
-    if search_query:
-        laboratorios = Laboratorio.objects.filter(
-            Q(nombre__icontains=search_query)
-            | Q(ciudad__icontains=search_query)
-            | Q(pais__icontains=search_query)
-        )
-    else:
-        laboratorios = Laboratorio.objects.all()
+#lista de laboratorios
+class ListaLaboratoriosView(LoginRequiredMixin, View):
+    login_url = '/login/'  # URL de inicio de sesión
+    redirect_field_name = 'next'  # Nombre del campo de redirección
 
-    context = {
-        "laboratorios": laboratorios,
-    }
-    return render(request, "lista_laboratorios.html", context)
+    def get(self, request):
+        search_query = request.GET.get("q")
+        if search_query:
+            laboratorios = Laboratorio.objects.filter(
+                Q(nombre__icontains=search_query)
+                | Q(ciudad__icontains=search_query)
+                | Q(pais__icontains=search_query)
+            )
+        else:
+            laboratorios = Laboratorio.objects.all()
+
+        context = {
+            "laboratorios": laboratorios,
+        }
+        return render(request, "lista_laboratorios.html", context)
+
+    def eliminar_laboratorio(self, laboratorio_id):
+        laboratorio = get_object_or_404(Laboratorio, id=laboratorio_id)
+        laboratorio.delete()
+        return redirect("lista_laboratorios")
 
 #elimina laboratorios
 def eliminar_laboratorio(laboratorio_id):
@@ -38,64 +47,87 @@ def eliminar_laboratorio(laboratorio_id):
     laboratorio.delete()
     return redirect("lista_laboratorios")
 
-#actualiza laboratorios
-def actualizar_laboratorio(request, laboratorio_id):
-    laboratorio = get_object_or_404(Laboratorio, id=laboratorio_id)
-    
-    if request.method == "POST":
-        # Procesar el formulario si se envió una solicitud POST
+
+# Actualiza laboratorios
+class ActualizarLaboratorioView(LoginRequiredMixin, View):
+    login_url = '/login/'  # URL de inicio de sesión
+    redirect_field_name = 'next'  # Nombre del campo de redirección
+
+    def get(self, request, laboratorio_id):
+        laboratorio = get_object_or_404(Laboratorio, id=laboratorio_id)
+        form = LaboratorioForm(instance=laboratorio)
+        context = {
+            "form": form,
+            "laboratorio": laboratorio,
+        }
+        return render(request, "actualizar_laboratorio.html", context)
+
+    def post(self, request, laboratorio_id):
+        laboratorio = get_object_or_404(Laboratorio, id=laboratorio_id)
         form = LaboratorioForm(request.POST, instance=laboratorio)
         if form.is_valid():
             form.save()
             return redirect("lista_laboratorios")
-    else:
-        # Si es una solicitud GET, simplemente renderiza el formulario con los datos actuales del laboratorio
-        form = LaboratorioForm(instance=laboratorio)
-
-    context = {
-        "form": form,
-        "laboratorio": laboratorio,  # Pasa el objeto laboratorio al contexto
-    }
-    return render(request, "actualizar_laboratorio.html", context)
+        context = {
+            "form": form,
+            "laboratorio": laboratorio,
+        }
+        return render(request, "actualizar_laboratorio.html", context)
 
 
-#agregar laboratorios
-def agregar_laboratorio(request):
-    if request.method == "POST":
+# Agregar laboratorios
+class AgregarLaboratorioView(LoginRequiredMixin, View):
+    login_url = '/login/'  # URL de inicio de sesión
+    redirect_field_name = 'next'  # Nombre del campo de redirección
+
+    def get(self, request):
+        form = LaboratorioForm()
+        context = {
+            "form": form,
+        }
+        return render(request, "agregar_laboratorio.html", context)
+
+    def post(self, request):
         form = LaboratorioForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect("lista_laboratorios")
-    else:
-        form = LaboratorioForm()
+        context = {
+            "form": form,
+        }
+        return render(request, "agregar_laboratorio.html", context)
 
-    context = {
-        "form": form,
-    }
-    return render(request, "agregar_laboratorio.html", context)
+# Lista de productos
+class ListaProductosView(LoginRequiredMixin, View):
+    login_url = '/login/'  # URL de inicio de sesión
+    redirect_field_name = 'next'  # Nombre del campo de redirección
 
-#view lista producto y query
-def lista_productos(request):
-    search_query = request.GET.get("q")
-    if search_query:
-        productos = Producto.objects.filter(
-        Q(nombre__icontains=search_query)
-        | Q(laboratorio__nombre__icontains=search_query)
-        | Q(f_fabricacion__icontains=search_query)
-        | Q(p_costo__icontains=search_query)
-        | Q(p_venta__icontains=search_query)
-)
-    else:
-        productos = Producto.objects.all()
+    def get(self, request):
+        search_query = request.GET.get("q")
+        if search_query:
+            productos = Producto.objects.filter(
+                Q(nombre__icontains=search_query)
+                | Q(laboratorio__nombre__icontains=search_query)
+                | Q(f_fabricacion__icontains=search_query)
+                | Q(p_costo__icontains=search_query)
+                | Q(p_venta__icontains=search_query)
+            )
+        else:
+            productos = Producto.objects.all()
 
-# Calcular la diferencia para cada producto
-    for producto in productos:
-        producto.diferencia =  producto.p_venta - producto.p_costo
+        # Calcular la diferencia para cada producto
+        for producto in productos:
+            producto.diferencia = producto.p_venta - producto.p_costo
 
-    context = {
-        "productos": productos,
-    }
-    return render(request, "lista_productos.html", context)
+        context = {
+            "productos": productos,
+        }
+        return render(request, "lista_productos.html", context)
+
+    def eliminar_producto(self, producto_id):
+        producto = get_object_or_404(Producto, id=producto_id)
+        producto.delete()
+        return redirect("lista_productos")
 
 #eliminar producto view
 def eliminar_producto(producto_id):
@@ -103,37 +135,39 @@ def eliminar_producto(producto_id):
     producto.delete()
     return redirect("lista_productos")
 
-#agregar productos
-def agregar_producto(request):
-    if request.method == "POST":
+# Agregar productos
+class AgregarProductoView(LoginRequiredMixin, View):
+    login_url = '/login/'  # URL de inicio de sesión
+    redirect_field_name = 'next'  # Nombre del campo de redirección
+
+    def get(self, request):
+        form = ProductoForm()
+        laboratorios = Laboratorio.objects.all()
+        context = {
+            "form": form,
+            "laboratorios": laboratorios,
+        }
+        return render(request, "agregar_producto.html", context)
+
+    def post(self, request):
         form = ProductoForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect("lista_productos")
-    else:
-        form = ProductoForm()
+        laboratorios = Laboratorio.objects.all()
+        context = {
+            "form": form,
+            "laboratorios": laboratorios,
+        }
+        return render(request, "agregar_producto.html", context)
 
-    laboratorios = Laboratorio.objects.all()  # Obtener todos los laboratorios
+# Actualizar producto
+class ActualizarProductoView(LoginRequiredMixin, View):
+    login_url = '/login/'  # URL de inicio de sesión
+    redirect_field_name = 'next'  # Nombre del campo de redirección
 
-    context = {
-        "form": form,
-        "laboratorios": laboratorios,  # Agregar el queryset de laboratorios al contexto
-    }
-    return render(request, "agregar_producto.html", context)
-
-#actualizar Producto
-def actualizar_producto(request, producto_id):
-    producto = get_object_or_404(Producto, id=producto_id)
-
-    if request.method == "POST":
-        producto.nombre = request.POST["nombre"]
-        producto.laboratorio = Laboratorio.objects.get(id=request.POST["laboratorio"])
-        producto.f_fabricacion = datetime.strptime(request.POST["f_fabricacion"], "%Y-%m-%d").date()
-        producto.p_costo = request.POST["p_costo"]
-        producto.p_venta = request.POST["p_venta"]
-        producto.save()
-        return redirect("lista_productos")
-    else:
+    def get(self, request, producto_id):
+        producto = get_object_or_404(Producto, id=producto_id)
         laboratorios = Laboratorio.objects.all()
         context = {
             "producto": producto,
@@ -141,42 +175,59 @@ def actualizar_producto(request, producto_id):
         }
         return render(request, "actualizar_producto.html", context)
 
+    def post(self, request, producto_id):
+        producto = get_object_or_404(Producto, id=producto_id)
+        producto.nombre = request.POST["nombre"]
+        producto.laboratorio = Laboratorio.objects.get(id=request.POST["laboratorio"])
+        producto.f_fabricacion = datetime.strptime(request.POST["f_fabricacion"], "%Y-%m-%d").date()
+        producto.p_costo = request.POST["p_costo"]
+        producto.p_venta = request.POST["p_venta"]
+        producto.save()
+        return redirect("lista_productos")
 
-#buscador de search del navbar
 
-def buscar_resultados(request):
-    search_query = request.GET.get("q")
-    
-    # Verificar si la consulta coincide con laboratorio
-    laboratorios = Laboratorio.objects.filter(
-        Q(nombre__icontains=search_query)
-        | Q(ciudad__icontains=search_query)
-        | Q(pais__icontains=search_query)
-    )
+# Buscar resultados
+class BuscarResultadosView(LoginRequiredMixin, View):
+    login_url = '/login/'  # URL de inicio de sesión
+    redirect_field_name = 'next'  # Nombre del campo de redirección
 
-    # Verificar si la consulta coincide con  producto
-    productos = Producto.objects.filter(
-        Q(nombre__icontains=search_query)
-        | Q(f_fabricacion__icontains=search_query)
-        | Q(p_costo__icontains=search_query)
-        | Q(p_venta__icontains=search_query)
-    )
+    def get(self, request):
+        search_query = request.GET.get("q")
+        
+        # Verificar si la consulta coincide con laboratorio
+        laboratorios = Laboratorio.objects.filter(
+            Q(nombre__icontains=search_query)
+            | Q(ciudad__icontains=search_query)
+            | Q(pais__icontains=search_query)
+        )
 
-    # Redirigir deacuerdo a el resultado de la búsqueda
-    if laboratorios.exists():
-        # Si hay coincidencias en laboratorios, redirige a la página de laboratorios
-        return redirect(f"/lista_laboratorios/?q={search_query}")
-    elif productos.exists():
-        # Si hay coincidencias en productos, redirige a la página de productos
-        return redirect(f"/lista_productos/?q={search_query}")
-    else:
-        # Si no se encontraron resultados, puedes mostrar un mensaje o redirigir a una página predeterminada
+        # Verificar si la consulta coincide con producto
+        productos = Producto.objects.filter(
+            Q(nombre__icontains=search_query)
+            | Q(f_fabricacion__icontains=search_query)
+            | Q(p_costo__icontains=search_query)
+            | Q(p_venta__icontains=search_query)
+        )
+
+        # Redirigir de acuerdo a el resultado de la búsqueda
+        if laboratorios.exists():
+            # Si hay coincidencias en laboratorios, redirige a la página de laboratorios
+            return redirect(f"/lista_laboratorios/?q={search_query}")
+        elif productos.exists():
+            # Si hay coincidencias en productos, redirige a la página de productos
+            return redirect(f"/lista_productos/?q={search_query}")
+        else:
+            # Si no se encontraron resultados, puedes mostrar un mensaje o redirigir a una página predeterminada
+            return render(request, "no_resultados.html")
+
+
+# No hay resultados para la búsqueda
+class NoResultadosView(LoginRequiredMixin, View):
+    login_url = '/login/'  # URL de inicio de sesión
+    redirect_field_name = 'next'  # Nombre del campo de redirección
+
+    def get(self, request):
         return render(request, "no_resultados.html")
-
-
-#no hay resultados para la busqueda
-def no_resultados(request):
-    return render(request, "no_resultados.html")
 
 
 # Login
