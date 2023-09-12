@@ -37,3 +37,5 @@ class RegistroUsuarioForm(UserCreationForm):
         if commit:
             user.save()
         return user
+    
+    

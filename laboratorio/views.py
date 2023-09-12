@@ -285,3 +285,5 @@ class RegistroView(View):
             messages.error(request, "Registro invalido. Algunos datos ingresados no son correctos")
             context = {"register_form": form}
             return render(request, "registro.html", context)
+        
+        
